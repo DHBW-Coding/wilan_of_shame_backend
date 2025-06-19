@@ -14,4 +14,3 @@ setInterval(showNextScreen, 10000);
 
 // Initial: ersten Screen anzeigen
 screens[current].classList.remove('hidden');
-
