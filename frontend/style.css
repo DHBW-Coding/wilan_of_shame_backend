@@ -1,0 +1,108 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: #101D33;
+  }
+  
+  /* Alle Screens */
+  .screen {
+    width: 100%;
+    height: 100vh;
+    max-width: 1024px; /* Basierend auf deinem Figma */
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    display: none;
+    background-color: #101D33;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  .screen:not(.hidden) {
+    display: block;
+  }
+  
+  /* Screen 1 */
+  .screen-background {
+    width: 1024px;
+    height: 1366px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #101D33;
+    z-index: 0;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #101D33;
+    height: 100%;
+  }
+  
+  .qr-image {
+    width: 600px;
+    height: 600px;
+    position: absolute;
+    top: 383px;
+    left: 212px;
+    border-radius: 90px;
+    z-index: 1;
+  }
+  
+  .bg-decoration {
+    width: 500px;
+    height: 500px;
+    position: absolute;
+    top: -117px;
+    left: 0px;
+    z-index: 1;
+  }
+  
+  .instruction {
+    position: absolute;
+    top: 291px;
+    left: 138px;
+    width: 748px;
+    text-align: center;
+    color: #5796C6;
+    font-size: 48px;
+    font-weight: 400;
+    z-index: 2;
+  }
+  
+  .ssid-info {
+    position: absolute;
+    top: 1059px;
+    left: 138px;
+    width: 748px;
+    text-align: center;
+    font-size: 64px;
+    font-weight: 700;
+    z-index: 2;
+  }
+  
+  .ssid-label {
+    color: #F37AB3;
+  }
+  .ssid-space {
+    color: #5796C6;
+  }
+  .ssid-value {
+    color: white;
+  }
+  
+  /* Placeholder Screens */
+  .placeholder {
+    color: white;
+    font-size: 48px;
+    text-align: center;
+    margin-top: 40vh;
+  }
+  
