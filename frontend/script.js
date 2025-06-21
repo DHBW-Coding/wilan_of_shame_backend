@@ -54,3 +54,46 @@ jsonData.forEach((device) => {
 countText.textContent = `${jsonData.length} CONNECTED DEVICE${
   jsonData.length !== 1 ? "S" : ""
 }`;
+
+const backendData = {
+      dns_queries: [
+        "https://www.dartconnect.com/",
+        "http://httpforever.com/",
+        "https://www.wetteronline.de/",
+        "https://github.com/langflow-ai",
+        "01752544762@s.whatsapp.org/",
+        "https://icloud.com/myAccount"
+      ]
+    };
+
+    function renderDNSFeed(data) {
+      const container = document.getElementById('dns-feed');
+      container.innerHTML = '';
+
+      const now = new Date();
+      let time = now;
+
+      data.dns_queries.forEach((url, index) => {
+        const timeStr = new Date(time.getTime() - index * 60000).toTimeString().slice(0, 5);
+        const line = document.createElement('div');
+        line.className = 'dns-line';
+
+        const timeEl = document.createElement('div');
+        timeEl.className = 'time';
+        timeEl.textContent = timeStr;
+
+        const urlEl = document.createElement('div');
+        urlEl.className = 'url';
+        urlEl.textContent = url;
+
+        if (url.startsWith('http://')) {
+          urlEl.classList.add('insecure');
+        }
+
+        line.appendChild(timeEl);
+        line.appendChild(urlEl);
+        container.appendChild(line);
+      });
+    }
+
+    renderDNSFeed(backendData);
