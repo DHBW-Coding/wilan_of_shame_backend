@@ -7,7 +7,7 @@ body {
 }
 
 .container {
-  max-width: 1024px;
+  /* max-width: 1024px; */
   margin: 0 auto;
   padding: 20px;
   position: relative;
@@ -16,7 +16,7 @@ body {
 .screen {
   width: 100%;
   min-height: 100vh;
-  max-width: 1024px;
+  /* max-width: 1024px; */
   margin: 0 auto;
   background-color: #101D33;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
@@ -29,9 +29,9 @@ body {
 }
 
 .screen-background {
-  width: 1024px;
+  /*width: 1024px;
   height: 1366px;
-  position: absolute;
+  position: absolute;*/
   top: 0;
   left: 0;
   background-color: #101D33;
@@ -43,7 +43,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   height: 100%;
   box-sizing: border-box;
   position: relative;
@@ -51,13 +51,15 @@ body {
 
 .content-card {
   background-color: #13253D;
-  border-radius: 40px;
-  padding: 40px;
-  margin-top: 60px;
+  border-radius: 80px;
+  padding: 80px;
+  margin-top: 400px;
+  margin-left: 80px;
+  margin-right: 80px;
 }
 
 .logo {
-  width: 250px;
+  width: 750px;
   height: auto;
   position: absolute;
   top: 20px;
@@ -84,33 +86,34 @@ body {
 
 .qr-image {
   width: 60vw;
-  max-width: 400px;
   height: auto;
   margin-top: 40px;
   margin-left: auto;
   margin-right: auto;
-  border-radius: 30px;
-  padding: 20px;
+  border-radius: 40px;
+  padding: 60px;
   background-color: white;
   box-sizing: border-box;
+  margin-top: 120px;
 }
 
 .qr-code {
-  width: 100px;
-  height: 100px;
+  width: 300px;
+  height: 300px;
   border-radius: 20px;
   background-color: white;
-  padding: 10px;
+  padding: 20px;
 }
 
 
 .qr-label {
-  font-size: 14px;
+  font-size: 28px;
   color: #FAE9AA;
   font-weight: 500;
   text-align: center;
-  max-width: 140px;
+  max-width: 300px;
   line-height: 1.3;
+  margin-top: 10px;
 }
 
 .qr-container {
@@ -136,16 +139,16 @@ body {
 }
 
 .instruction {
-  margin-top: 140px;
+  margin-top: 720px;
   text-align: center;
   color: #5796C6;
-  font-size: 3vw;
+  font-size: 4vw;
   font-weight: 400;
 }
 
 .ssid-info {
-  margin-top: 40px;
-  font-size: 4vw;
+  margin-top: 240px;
+  font-size: 6vw;
   font-weight: 700;
   text-align: center;
 }
@@ -191,50 +194,51 @@ body {
 }
 
 h1 {
-  font-size: 36px;
+  font-size: 88px;
   font-weight: 700;
-  margin-bottom: 30px;
+  margin-bottom: 60px;
 }
 
 .device-table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 30px;
+  margin-top: 30px;
+  margin-bottom: 120px;
 }
 
 .device-table th {
   color: #5796C6;
-  font-size: 24px;
+  font-size: 60px;
   font-weight: 400;
   text-align: left;
   padding-bottom: 16px;
 }
 
 .device-table td {
-  font-size: 24px;
+  font-size: 60px;
   font-weight: 400;
-  padding: 12px 0;
-  border-top: 2px solid #2D4257;
+  padding: 48px 0;
+  border-top: 4px solid #2D4257;
 }
 
 .device-count {
   color: #F37AB3;
-  font-size: 48px;
+  font-size: 96px;
   font-weight: 700;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .footer-note {
   color: #FAE9AA;
-  font-size: 24px;
+  font-size: 36px;
   font-weight: 700;
   text-align: center;
 }
 
 .footer-subtext {
   color: white;
-  font-size: 20px;
+  font-size: 28px;
   font-weight: 400;
   text-align: center;
   margin-top: 10px;
@@ -289,52 +293,66 @@ h1 {
 .wilan-queries {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  border-top: 2px solid #2D4257;
-  border-bottom: 2px solid #2D4257;
-  padding: 2rem 0;
-  margin-bottom: 20px;
+  border-top: 4px solid #2D4257;
+  border-bottom: 4px solid #2D4257;
+  padding: 4rem 0;
+  margin-top: 360px;
 }
 
 .dns-line {
   display: flex;
-  font-size: 1.1rem;
-  line-height: 1.6;
-  margin-bottom: 8px;
+  font-size: 66px;
+  margin-top: 48px;
+  margin-bottom: 48px;
 }
 
 .time {
-  font-size: 24px;
+  font-size: 66px;
   color: #5796C6;
-  width: 60px;
+  width: 66px;
   flex-shrink: 0;
-  margin-left: 80px;
-  margin-right: 40px;
+  margin-left: 240px;
+  margin-right: 120px;
 }
 
 .url {
-  font-size: 24px;
+  margin-left: 240px;
+  font-size: 66px;
   color: white;
   word-break: break-word;
 }
 
 .insecure {
-  font-size: 24px;
+  font-size: 66px;
   color: #F37AB3;
   font-weight: bold;
 }
 
 .wilan-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
   text-align: center;
   padding-top: 1rem;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  /* optional: dezenter Schatten */
+  z-index: 1000;
 }
 
 .footer-headline {
-  font-size: 1.5rem;
+  font-size: 4.5rem;
   color: #FAE9AA;
 }
 
 .wilan-footer p {
-  font-size: 1.2rem;
+  font-size: 3.6rem;
   color: white;
+}
+
+#app {
+  width: 2160px;
+  height: 4096px;
+  margin: 0 auto;
+  position: relative;
 }

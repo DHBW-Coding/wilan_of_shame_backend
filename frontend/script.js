@@ -7,6 +7,7 @@ function showNextScreen() {
   screens[current].classList.add("hidden");
   current = (current + 1) % screens.length;
   screens[current].classList.remove("hidden");
+  showRandomTip();
 }
 
 // Alle 10 Sekunden zum nächsten Screen wechseln
@@ -36,6 +37,7 @@ const jsonData = [
     vendor: "Apple",
     device_name: "Max’s iPhone 14",
   },
+  
 ];
 
 const tbody = document.querySelector("#deviceTable tbody");
@@ -97,3 +99,46 @@ const backendData = {
     }
 
     renderDNSFeed(backendData);
+
+    const tips = [
+    {
+      headline: "💡 <strong>Use a VPN before surfing freely!</strong>",
+      text: "A VPN encrypts your connection and keeps snoopers away."
+    },
+    {
+      headline: "💡 <strong>Look for https:// and a padlock!</strong>",
+      text: "Only enter personal info on secure websites."
+    },
+    {
+      headline: "💡 <strong>Don't access banking sites over public Wi-Fi!</strong>",
+      text: "Save it for a trusted, private connection."
+    },
+    {
+      headline: "💡 <strong>Turn off automatic Wi-Fi connections!</strong>",
+      text: "Prevent your device from joining risky networks."
+    },
+    {
+      headline: "💡 <strong>Enable your firewall!</strong>",
+      text: "It helps block unwanted access attempts."
+    },
+    {
+      headline: "💡 <strong>Don’t share passwords!</strong>",
+      text: "Even friends can be a risk in shared networks."
+    }
+  ];
+
+  function showRandomTip() {
+    const randomTip = tips[Math.floor(Math.random() * tips.length)];
+
+  const activeScreen = document.querySelector(".screen:not(.hidden)");
+
+  if (activeScreen) {
+    const tipEl = activeScreen.querySelector(".footer-headline");
+    const descEl = activeScreen.querySelector("footer p");
+
+    if (tipEl && descEl) {
+      tipEl.innerHTML = randomTip.headline;
+      descEl.textContent = randomTip.text;
+    }
+  }
+}
