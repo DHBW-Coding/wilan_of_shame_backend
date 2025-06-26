@@ -14,8 +14,8 @@
   <div id="screen-1" class="screen">
     <div class="screen-content">
       <img src="assets/WiLAN_Logo1.png" alt="WiLAN of Shame Logo" class="logo" />
-      <div class="instruction">Scan the QR code to connect</div>
-      <img src="https://api.qrserver.com/v1/create-qr-code/?data=WIFI:T:nopass;S:Free%20WiFi;;&size=600x600"
+      <div class="instruction">Connect to free Wi-Fi – scan me!</div>
+      <img src="https://api.qrserver.com/v1/create-qr-code/?data=WIFI:T:nopass;S:Free%20WiFi;;&size=1200x1200"
         alt="QR Code" class="qr-image" />
       <div class="ssid-info">
         <span class="ssid-label">SSID:</span><span class="ssid-space"> </span><span class="ssid-value">Free WiFi</span>
@@ -32,11 +32,10 @@
         <img class="qr-code"
           src="https://api.qrserver.com/v1/create-qr-code/?data=WIFI:T:nopass;S:Free%20WiFi;;&size=200x200"
           alt="Wi-Fi QR Code" />
-        <div class="qr-label">Connect to free<br>Wi-Fi – scan me!</div>
+        <div class="qr-label">Free Wi-Fi – just scan!</div>
       </div>
 
       <div class="content-card">
-        <h1>CONNECTED DEVICES</h1>
         <table class="device-table" id="deviceTable">
           <thead>
             <tr>
@@ -50,10 +49,14 @@
           </tbody>
         </table>
         <div class="device-count" id="deviceCount">0 CONNECTED DEVICES</div>
-        <div class="footer-note">💡 Sipping coffee? Use a VPN before surfing freely!</div>
-        <div class="footer-subtext">A VPN encrypts your connection and keeps snoopers away.</div>
       </div>
+
+      <footer class="wilan-footer">
+        <div id="footer-tip-2" class="footer-headline">💡 <strong>Sipping coffee? Use a VPN before surfing freely!</strong></div>
+        <p id="footer-description-2">A VPN encrypts your connection and keeps snoopers away.</p>
+      </footer>
     </div>
+  </div>
   </div>
 
   <!-- Screen 3: Live DNS Feed -->
@@ -64,20 +67,20 @@
         <img class="qr-code"
           src="https://api.qrserver.com/v1/create-qr-code/?data=WIFI:T:nopass;S:Free%20WiFi;;&size=200x200"
           alt="Wi-Fi QR Code" />
-        <div class="qr-label">Connect to free<br>Wi-Fi – scan me!</div>
+        <div class="qr-label">Free Wi-Fi - just scan!</div>
       </div>
     </div>
     <div class="wilan-queries">
       <div id="dns-feed"></div>
-      </div>
+    </div>
 
     <footer class="wilan-footer">
-      <div class="footer-headline">💡 <strong>No padlock, no login!</strong></div>
-      <p>Only enter personal info on websites that show “https://” and a lock icon.</p>
+      <div id="footer-tip-3" class="footer-headline">💡 <strong>No padlock, no login!</strong></div>
+      <p id="footer-description-3">Only enter personal info on websites that show “https://” and a lock icon.</p>
     </footer>
   </div>
 
-  <!-- Screen 4: Leaderboard -->
+  <!-- Screen 4: Leaderboard
   <div id="screen-4" class="screen hidden">
     <div class="container">
       <img src="assets/WiLAN_Logo1.png" alt="WiLAN of Shame Logo" class="logo" />
@@ -89,7 +92,7 @@
       </div>
     </div>
     <div class="placeholder">Screen 4 – Leaderboard</div>
-  </div>
+  </div> -->
 
   <script src="script.js"></script>
 </body>
