@@ -7,7 +7,6 @@ body {
 }
 
 .container {
-  /* max-width: 1024px; */
   margin: 0 auto;
   padding: 20px;
   position: relative;
@@ -16,7 +15,6 @@ body {
 .screen {
   width: 100%;
   min-height: 100vh;
-  /* max-width: 1024px; */
   margin: 0 auto;
   background-color: #101D33;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
@@ -29,9 +27,6 @@ body {
 }
 
 .screen-background {
-  /*width: 1024px;
-  height: 1366px;
-  position: absolute;*/
   top: 0;
   left: 0;
   background-color: #101D33;
@@ -336,7 +331,6 @@ h1 {
   text-align: center;
   padding-top: 1rem;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-  /* optional: dezenter Schatten */
   z-index: 1000;
 }
 
@@ -355,4 +349,37 @@ h1 {
   height: 4096px;
   margin: 0 auto;
   position: relative;
+}
+
+.screen-indicators {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0;
+  gap: 16px;
+}
+
+.screen-indicators_qr {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  z-index: 1000;
+}
+
+.dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #ccc;
+  transition: background-color 0.3s ease;
+}
+
+.dot.active {
+  transform: scale(1.4);
+  background-color: #F37AB3;
 }
