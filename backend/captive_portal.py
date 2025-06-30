@@ -1,27 +1,19 @@
 from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 import subprocess
 import uvicorn
+from pathlib import Path
 
 app = FastAPI()
 
-#@app.get("/")
-#async def captive_portal_home():
-    #return {"message": "Welcome to the Captive Portal"}
+app.mount("/static", StaticFiles(directory="../frontend"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
-async def portal():
-    return """
-    <html>
-        <head><title>Welcome</title></head>
-        <body>
-            <h1>Welcome to Free WiFi</h1>
-            <form action="/login" method="post">
-                <input type="submit" value="Accept and Continue">
-            </form>
-        </body>
-    </html>
-    """
+def read_root():
+    html_path = Path("../captive-p/index.html")
+    html_content = html_path.read_text(encoding="utf-8")
+    return HTMLResponse(content=html_content)
 
 @app.post("/login")
 async def login(request: Request):
