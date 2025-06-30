@@ -7,7 +7,7 @@ from typing import Optional, Literal, Dict, Any
 from datetime import datetime
 import requests
 
-from backend.websocket_manager import ws_manager
+from websocket_manager import ws_manager
 import json
 
 @dataclass
@@ -110,69 +110,68 @@ class DeviceEvent:
             print(f"Error: {e}")
         return None
 
-def main():
-    # Filters
-    filter_tcp_out = "tcp and not src net 10.42.0.0/24"
-    filter_no_gw = "not src 10.42.0.1"
-    device_list = []
+#Create a class dont declare global variables    
+device_list = []
 
-    def device_exist(mac_src=None):
+def device_exist(mac_src=None):
         ''' Check if and where the device is in the list '''
         return bisect.bisect_left(device_list, mac_src, key=lambda d: d.ip_address) -1 ## TODO: The returned index is not right or something i get index out of range errors if there are more then one deivce, maybe you can not simply access the array by the index or something
 
-    def add_device(ip_src, mac_src, timestamp=None):
-        ''' Add a new device to the list '''
-        device_event = DeviceEvent(ip_address=ip_src, mac_address=mac_src, timestamp=timestamp)
-        bisect.insort(device_list, device_event)
-        return True
+def add_device(ip_src, mac_src, timestamp=None):
+    ''' Add a new device to the list '''
+    device_event = DeviceEvent(ip_address=ip_src, mac_address=mac_src, timestamp=timestamp)
+    bisect.insort(device_list, device_event)
+    return True
 
-    def print_device_events(device):
-        ''' Print only non-null fields of the device '''
-        attrs = [
-            ("MAC", device.mac_address),
-            ("IP", device.ip_address),
-            ("Vendor", device.vendor if device.vendor and device.vendor != "N/A" else None),
-            ("Timestamp", device.timestamp),
-            ("Device Name", device.device_name),
-            ("OS Version", device.os_version),
-            ("DNS Query", device.dns_queries[-1] if device.dns_queries else None),
-            ("HTTP Requests", device.http_request_details),
-        ]
-        print(", ".join(f"{name}: {value}" for name, value in attrs if value))
+def print_device_events(device):
+    ''' Print only non-null fields of the device '''
+    attrs = [
+        ("MAC", device.mac_address),
+        ("IP", device.ip_address),
+        ("Vendor", device.vendor if device.vendor and device.vendor != "N/A" else None),
+        ("Timestamp", device.timestamp),
+        ("Device Name", device.device_name),
+        ("OS Version", device.os_version),
+        ("DNS Query", device.dns_queries[-1] if device.dns_queries else None),
+        ("HTTP Requests", device.http_request_details),
+    ]
+    print(", ".join(f"{name}: {value}" for name, value in attrs if value))
 
-    # Define a callback function to process each packet
-    def packet_callback(packet: Packet):
-        if packet.haslayer(DNS) and packet.haslayer(IP):
-            ip_src = packet[IP].src
-            mac = packet[Ether].src if packet.haslayer(Ether) else "N/A"
-            timestamp = packet.time
-            device_index = device_exist(mac)
+# Define a callback function to process each packet
+def packet_callback(packet: Packet):
+    if packet.haslayer(DNS) and packet.haslayer(IP):
+        ip_src = packet[IP].src
+        mac = packet[Ether].src if packet.haslayer(Ether) else "N/A"
+        timestamp = packet.time
+        device_index = device_exist(mac)
 
-            if device_index == -1:
-                add_device(ip_src, mac, timestamp)
-                print(f"New device detected: {mac} ({ip_src}) at {datetime.fromtimestamp(timestamp).isoformat()}")
+        if device_index == -1:
+            add_device(ip_src, mac, timestamp)
+            print(f"New device detected: {mac} ({ip_src}) at {datetime.fromtimestamp(timestamp).isoformat()}")
+            # Sent over WebSocket
+            asyncio.create_task(
+                ws_manager.send_to_queue(json.dumps(device_list[-1].to_dict()))
+            )
+        else:
+            device_list[device_index].timestamp = datetime.fromtimestamp(timestamp).isoformat()
+            if device_list[device_index].add_event("DNS_QUERY", packet[DNS].qd.qname.decode('utf-8')):
+                print_device_events(device_list[device_index])
                 # Sent over WebSocket
                 asyncio.create_task(
-                    ws_manager.send_to_queue(json.dumps(device_list[-1].to_dict()))
+                    ws_manager.send_to_queue(json.dumps(device_list[device_index].to_dict()))
                 )
-            else:
-                device_list[device_index].timestamp = datetime.fromtimestamp(timestamp).isoformat()
-                if device_list[device_index].add_event("DNS_QUERY", packet[DNS].qd.qname.decode('utf-8')):
-                    print_device_events(device_list[device_index])
-                    # Sent over WebSocket
-                    asyncio.create_task(
-                        ws_manager.send_to_queue(json.dumps(device_list[device_index].to_dict()))
-                    )
+
+def start_sniffing():
+    # Filters
+    filter_tcp_out = "tcp and not src net 10.42.0.0/24"
+    filter_no_gw = "not src 10.42.0.1"
 
     # Start sniffing packets on the 'wlp2s0' interface
     sniff(filter=filter_no_gw, prn=packet_callback, store=False, iface='wlp2s0')
-    for device in device_list:
-        for query in device.dns_queries:
-            print(f"Device {device.mac_address} ({device.ip_address}) DNS Query: {query}")
 
-# nslookup 157.240.223.61 // Facebook Whatsapp IP
-# Network IP: 10.42.0.0
+    #for device in device_list:
+        #for query in device.dns_queries:
+            #print(f"Device {device.mac_address} ({device.ip_address}) DNS Query: {query}")
 
-
-if __name__ == "__main__":
-    main()
+    # nslookup 157.240.223.61 // Facebook Whatsapp IP
+    # Network IP: 10.42.0.0

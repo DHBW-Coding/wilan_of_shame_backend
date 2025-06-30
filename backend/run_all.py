@@ -1,5 +1,7 @@
 import multiprocessing
 import uvicorn
+import sniffer
+
 
 def run_main_webserver():
     from main_webserver import app, ws_manager
@@ -15,10 +17,13 @@ def run_captive_portal():
 
 if __name__ == "__main__":
     p1 = multiprocessing.Process(target=run_main_webserver)
-    p2 = multiprocessing.Process(target=run_captive_portal)
+    #p2 = multiprocessing.Process(target=run_captive_portal)
+    p3 = multiprocessing.Process(target=sniffer.start_sniffing)
 
     p1.start()
-    p2.start()
+    #p2.start()
+    p3.start()
 
     p1.join()
-    p2.join()
+    #p2.join()
+    p3.join()
