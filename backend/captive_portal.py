@@ -7,11 +7,25 @@ from pathlib import Path
 
 app = FastAPI()
 
-app.mount("/static", StaticFiles(directory="../frontend"), name="static")
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+app.mount("/static", StaticFiles(directory=BASE_DIR / "frontend"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 def read_root():
-    html_path = Path("../captive-p/index.html")
+    html_path = Path(BASE_DIR / "captive-p/index.html")
+    html_content = html_path.read_text(encoding="utf-8")
+    return HTMLResponse(content=html_content)
+
+@app.get("/privacy-policy.html", response_class=HTMLResponse)
+def read_root():
+    html_path = Path(BASE_DIR / "captive-p/privacy-policy.html")
+    html_content = html_path.read_text(encoding="utf-8")
+    return HTMLResponse(content=html_content)
+
+@app.get("/terms-of-service.html", response_class=HTMLResponse)
+def read_root():
+    html_path = Path(BASE_DIR / "captive-p/terms-of-service.html")
     html_content = html_path.read_text(encoding="utf-8")
     return HTMLResponse(content=html_content)
 
