@@ -29,6 +29,10 @@ def read_root():
     html_content = html_path.read_text(encoding="utf-8")
     return HTMLResponse(content=html_content)
 
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return FileResponse(BASE_DIR / "frontend" / "assets" / "favicon.ico")
+
 @app.post("/login")
 async def login(request: Request):
     # Get client IP
