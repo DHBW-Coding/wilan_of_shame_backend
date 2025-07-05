@@ -7,7 +7,6 @@
     <title>Welcome to WiLAN of Shame</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="stylesheet" href="/static/style.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -20,9 +19,11 @@
         <p>By accessing this WiFi hotspot, you agree to our <a href="terms-of-service.html">Terms of Service</a> and <a href="privacy-policy.html">Privacy Policy</a>.</p> 
       </div>
       <div class="captive-form">
-        <form action="/login" method="post">
+        <form id="acceptBtn" action="/login" method="post">
             <input type="submit" value="Accept and Continue">
         </form>
       </div>
     </div>
   </div>
+</body>
+</html>
