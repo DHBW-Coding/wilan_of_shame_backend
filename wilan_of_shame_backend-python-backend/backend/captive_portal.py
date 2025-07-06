@@ -1,4 +1,4 @@
-import time
+import os
 from fastapi import FastAPI, Request, Form, Response
 from fastapi.responses import HTMLResponse, RedirectResponse, FileResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
@@ -8,31 +8,59 @@ from pathlib import Path
 
 app = FastAPI()
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+# BASE_DIR = Path(__file__).resolve().parent.parent
 
-app.mount("/static", StaticFiles(directory=BASE_DIR / "frontend"), name="static")
+# app.mount("/static", StaticFiles(directory=BASE_DIR / "frontend"), name="static")
+
+# @app.get("/", response_class=HTMLResponse)
+# def read_root():
+#     html_path = Path(BASE_DIR / "captive-p/index.html")
+#     html_content = html_path.read_text(encoding="utf-8")
+#     return HTMLResponse(content=html_content)
+
+# @app.get("/privacy-policy.html", response_class=HTMLResponse)
+# def read_root():
+#     html_path = Path(BASE_DIR / "captive-p/privacy-policy.html")
+#     html_content = html_path.read_text(encoding="utf-8")
+#     return HTMLResponse(content=html_content)
+
+# @app.get("/terms-of-service.html", response_class=HTMLResponse)
+# def read_root():
+#     html_path = Path(BASE_DIR / "captive-p/terms-of-service.html")
+#     html_content = html_path.read_text(encoding="utf-8")
+#     return HTMLResponse(content=html_content)
+
+# @app.get("/favicon.ico", include_in_schema=False)
+# def favicon():
+#     return FileResponse(BASE_DIR / "frontend" / "assets" / "favicon.ico")
+
+# Absolute path to the frontend directory
+cp_path = os.path.join(os.path.dirname(__file__), '..', 'captive-p')
+
+# Serve all static files in frontend directory (e.g., CSS, JS, images)
+app.mount("/", StaticFiles(directory=cp_path, html=True), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 def read_root():
-    html_path = Path(BASE_DIR / "captive-p/index.html")
+    html_path = Path(cp_path / "index.html")
     html_content = html_path.read_text(encoding="utf-8")
     return HTMLResponse(content=html_content)
 
 @app.get("/privacy-policy.html", response_class=HTMLResponse)
 def read_root():
-    html_path = Path(BASE_DIR / "captive-p/privacy-policy.html")
+    html_path = Path(cp_path / "privacy-policy.html")
     html_content = html_path.read_text(encoding="utf-8")
     return HTMLResponse(content=html_content)
 
 @app.get("/terms-of-service.html", response_class=HTMLResponse)
 def read_root():
-    html_path = Path(BASE_DIR / "captive-p/terms-of-service.html")
+    html_path = Path(cp_path / "terms-of-service.html")
     html_content = html_path.read_text(encoding="utf-8")
     return HTMLResponse(content=html_content)
 
 @app.get("/favicon.ico", include_in_schema=False)
 def favicon():
-    return FileResponse(BASE_DIR / "frontend" / "assets" / "favicon.ico")
+    return FileResponse(cp_path / "cp-assets" / "favicon.ico")
 
 '''
 1. Abfage welches gerät (z.B. Apple, etc.) sich verbinden will (über Macadresse in Verbindung mit dem Captive Portal Call siehe unten)

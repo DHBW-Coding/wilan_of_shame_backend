@@ -1,0 +1,107 @@
+@font-face {
+  font-family: 'Inter';
+  src: url('Inter-VariableFont_opsz,wght.ttf') format('truetype');
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #101D33;
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.screen {
+  width: 100%;
+  max-width: 600px;
+  padding: 2rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #101D33;
+}
+
+.screen-content {
+  text-align: center;
+  width: 100%;
+}
+
+.logo {
+  max-width: 220px;
+  height: auto;
+  margin: 0 auto 2rem auto;
+  display: block;
+}
+
+.instruction h1 {
+  font-size: 2rem;
+  color: #FAE9AA;
+  margin-bottom: 1rem;
+}
+
+.instruction p {
+  font-size: 1rem;
+  color: #5796C6;
+  line-height: 1.5;
+  margin: 0 auto 2rem auto;
+  max-width: 480px;
+}
+
+.instruction a {
+  color: #F37AB3;
+  text-decoration: underline;
+}
+
+.captive-form {
+  margin-top: 1rem;
+}
+
+.captive-form form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.captive-form input[type="submit"] {
+  background-color: #F37AB3;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  max-width: 320px;
+}
+
+.captive-form input[type="submit"]:hover {
+  background-color: #e0629e;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .logo {
+    max-width: 160px;
+    margin-bottom: 1.5rem;
+  }
+
+  .instruction h1 {
+    font-size: 1.5rem;
+  }
+
+  .instruction p {
+    font-size: 0.95rem;
+  }
+
+  .captive-form input[type="submit"] {
+    font-size: 1rem;
+    padding: 0.9rem 1.5rem;
+  }
+}
