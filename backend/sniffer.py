@@ -72,9 +72,8 @@ class DeviceEvent:
             if self.device_name:
                 if self.device_name.startswith("iPhone") or self.device_name.startswith("iPad"):
                     return "Apple, Inc." # Default to Apple Inc. for testing purposes
-            else:
-                self.device_name = "iPhone from ..." # Default to iPhone for testing purposes
-                return "Apple, Inc."
+                if self.device_name.startswith("S"):
+                    return "Samsung Electronics Co.,Ltd"
             return "N/A"
         return response.content.decode()
     
