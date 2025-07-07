@@ -1,4 +1,4 @@
-const socket = new WebSocket("ws://localhost:3000");
+const socket = new WebSocket("ws://localhost:8082/ws");
 
 const screens = document.querySelectorAll(".screen");
 let current = 0;
@@ -23,102 +23,11 @@ setInterval(showNextScreen, 10000);
 // Initial: ersten Screen anzeigen
 screens[current].classList.remove("hidden");
 
-const jsonData = [
-  {
-    mac_address: "3C:5A:B4:1F:8C:22",
-    vendor: "Apple",
-    device_name: "Anna's iPhone",
-  },
-  {
-    mac_address: "DC:23:B4:1G:6C:42",
-    vendor: "Samsung",
-    device_name: "GMT-1837",
-  },
-  {
-    mac_address: "AC:2A:F4:B2:8C:12",
-    vendor: "Huawei",
-    device_name: "My P60 Pro",
-  },
-  {
-    mac_address: "3C:5A:B3:1F:8C:22",
-    vendor: "Apple",
-    device_name: "Max’s iPhone 14",
-  },
-  {
-    mac_address: "3C:5A:B4:1F:8C:22",
-    vendor: "Apple",
-    device_name: "Anna's iPhone",
-  },
-  {
-    mac_address: "DC:23:B4:1G:6C:42",
-    vendor: "Samsung",
-    device_name: "GMT-1837",
-  },
-  {
-    mac_address: "AC:2A:F4:B2:8C:12",
-    vendor: "Huawei",
-    device_name: "My P60 Pro",
-  },
-  {
-    mac_address: "3C:5A:B3:1F:8C:22",
-    vendor: "Apple",
-    device_name: "Max’s iPhone 14",
-  },
-  {
-    mac_address: "3C:5A:B4:1F:8C:22",
-    vendor: "Apple",
-    device_name: "Anna's iPhone",
-  },
-  {
-    mac_address: "DC:23:B4:1G:6C:42",
-    vendor: "Samsung",
-    device_name: "GMT-1837",
-  },
-  {
-    mac_address: "AC:2A:F4:B2:8C:12",
-    vendor: "Huawei",
-    device_name: "My P60 Pro",
-  },
-  {
-    mac_address: "3C:5A:B3:1F:8C:22",
-    vendor: "Apple",
-    device_name: "Max’s iPhone 14",
-  },
-  {
-    mac_address: "DC:23:B4:1G:6C:42",
-    vendor: "Samsung",
-    device_name: "GMT-1837",
-  },
-  {
-    mac_address: "AC:2A:F4:B2:8C:12",
-    vendor: "Huawei",
-    device_name: "My P60 Pro",
-  },
-  {
-    mac_address: "3C:5A:B3:1F:8C:22",
-    vendor: "Apple",
-    device_name: "Max’s iPhone 14",
-  },
-  {
-    mac_address: "3C:5A:B4:1F:8C:22",
-    vendor: "Apple",
-    device_name: "Anna's iPhone",
-  },
-  {
-    mac_address: "DC:23:B4:1G:6C:42",
-    vendor: "Samsung",
-    device_name: "GMT-1837",
-  },
-  {
-    mac_address: "AC:2A:F4:B2:8C:12",
-    vendor: "Huawei",
-    device_name: "My P60 Pro",
-  },
-];
+let jsonData = [];
 
 const devicesPerPage = 12;
 let currentDevicePage = -1;
-const totalPages = Math.ceil(jsonData.length / devicesPerPage);
+let totalPages = Math.ceil(jsonData.length / devicesPerPage);
 
 function updateDeviceTable() {
   currentDevicePage = (currentDevicePage + 1) % totalPages;
@@ -159,32 +68,6 @@ const backendData = {
     "http://httpforever.com/",
     "https://www.wetteronline.de/",
     "https://github.com/langflow-ai",
-    "01752544762@s.whatsapp.org/",
-    "https://icloud.com/myAccount",
-    "https://www.dartconnect.com/",
-    "http://httpforever.com/",
-    "https://www.wetteronline.de/",
-    "https://github.com/langflow-ai",
-    "01752544762@s.whatsapp.org/",
-    "https://icloud.com/myAccount",
-    "https://www.dartconnect.com/",
-    "http://httpforever.com/",
-    "https://www.wetteronline.de/",
-    "https://github.com/langflow-ai",
-    "01752544762@s.whatsapp.org/",
-    "https://icloud.com/myAccount",
-    "https://www.dartconnect.com/",
-    "http://httpforever.com/",
-    "https://www.wetteronline.de/",
-    "https://github.com/langflow-ai",
-    "01752544762@s.whatsapp.org/",
-    "https://icloud.com/myAccount",
-    "https://www.dartconnect.com/",
-    "http://httpforever.com/",
-    "https://www.wetteronline.de/",
-    "https://github.com/langflow-ai",
-    "01752544762@s.whatsapp.org/",
-    "https://icloud.com/myAccount",
   ],
 };
 
@@ -323,3 +206,27 @@ function updateIndicators() {
     });
   });
 }
+
+socket.addEventListener("message", (event) => {
+  try {
+    const device = JSON.parse(event.data);
+
+    if (device.mac_address && device.event_trigger) {
+      // Prüfe, ob das Gerät schon in der Liste ist
+      const idx = jsonData.findIndex(d => d.mac_address === device.mac_address);
+
+        if (idx === -1) {
+          // Neues Gerät hinzufügen
+          jsonData.push(device);
+          console.log("New device added:", device.mac_address);
+        } else {
+          // Gerät ggf. updaten (optional)
+          jsonData[idx] = device;
+          console.log("Device updated:", device.mac_address);
+        }
+
+    }
+  } catch (e) {
+    console.error("Invalid JSON from backend:", event.data);
+  }
+});

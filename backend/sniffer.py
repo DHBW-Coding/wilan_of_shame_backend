@@ -10,6 +10,13 @@ import requests
 from websocket_manager import ws_manager
 import json
 
+#LEASE_FILE = '/var/lib/misc/dnsmasq.leases'                # For Raspberry Pi
+#INTERFACE = wlan0
+#NETWORK_IP = '192.198.4.1'
+LEASE_FILE = '/var/lib/NetworkManager/dnsmasq-wlp2s0.leases'
+INTERFACE = 'wlp2s0'
+NETWORK_IP = '10.42.0.1'
+
 @dataclass
 class HTTPRequestDetails:
     url: str
@@ -57,11 +64,13 @@ class DeviceEvent:
         
         # We will use an API to get the vendor details
         url = "https://api.macvendors.com/"
-        
+        formatted_mac = self.mac_address.replace(":", "")
         # Use get method to fetch details
-        response = requests.get(url+self.mac_address)
+        response = requests.get(url+formatted_mac)
         if response.status_code != 200:
-            raise Exception("[!] Invalid MAC Address!")
+            print("[!] Invalid MAC Address!")
+            if self.device_name.startswith("iPhone") or self.device_name.startswith("iPad"):
+                return "Apple, Inc." # Default to Apple Inc. for testing purposes
         return response.content.decode()
     
     def add_event(self, event_type: Literal["NEW_DEVICE", "DNS_QUERY", "HTTP_REQUEST_UNSECURE"], details = None):
@@ -95,7 +104,7 @@ class DeviceEvent:
         else:
             return None
 
-    def request_device_name(self, lease_file='/var/lib/NetworkManager/dnsmasq-wlp2s0.leases'):
+    def request_device_name(self, lease_file=LEASE_FILE):
         """ Request the device name from the lease file based on the IP address """
         ip = self.ip_address
         try:
@@ -115,12 +124,21 @@ device_list = []
 
 def device_exist(mac_src=None):
         ''' Check if and where the device is in the list '''
-        return bisect.bisect_left(device_list, mac_src, key=lambda d: d.ip_address) -1 ## TODO: The returned index is not right or something i get index out of range errors if there are more then one deivce, maybe you can not simply access the array by the index or something
+        #return bisect.bisect_left(device_list, mac_src, key=lambda d: d.ip_address) -1 
+        i = 0
+        for device in device_list:
+            if device.mac_address == mac_src:
+                return i
+            i = i + 1
+            
+        return -1
+        
 
 def add_device(ip_src, mac_src, timestamp=None):
     ''' Add a new device to the list '''
     device_event = DeviceEvent(ip_address=ip_src, mac_address=mac_src, timestamp=timestamp)
-    bisect.insort(device_list, device_event)
+    #bisect.insort(device_list, device_event)
+    device_list.append(device_event)
     return True
 
 def print_device_events(device):
@@ -138,7 +156,7 @@ def print_device_events(device):
     print(", ".join(f"{name}: {value}" for name, value in attrs if value))
 
 # Define a callback function to process each packet
-def packet_callback(packet: Packet):
+def packet_callback(packet: Packet, event_queue=None):
     if packet.haslayer(DNS) and packet.haslayer(IP):
         ip_src = packet[IP].src
         mac = packet[Ether].src if packet.haslayer(Ether) else "N/A"
@@ -149,29 +167,24 @@ def packet_callback(packet: Packet):
             add_device(ip_src, mac, timestamp)
             print(f"New device detected: {mac} ({ip_src}) at {datetime.fromtimestamp(timestamp).isoformat()}")
             # Sent over WebSocket
-            asyncio.create_task(
-                ws_manager.send_to_queue(json.dumps(device_list[-1].to_dict()))
-            )
+            if event_queue:
+                event_json = json.dumps(device_list[-1].to_dict())
+                event_queue.put(event_json)
         else:
             device_list[device_index].timestamp = datetime.fromtimestamp(timestamp).isoformat()
             if device_list[device_index].add_event("DNS_QUERY", packet[DNS].qd.qname.decode('utf-8')):
-                print_device_events(device_list[device_index])
-                # Sent over WebSocket
-                asyncio.create_task(
-                    ws_manager.send_to_queue(json.dumps(device_list[device_index].to_dict()))
-                )
+                # TODO: Some packets do not have a qname chatch this
+                #print_device_events(device_list[device_index])
+                ## Sent over WebSocket
+                if event_queue:
+                    event_json = json.dumps(device_list[device_index].to_dict())
+                    event_queue.put(event_json)
 
-def start_sniffing():
+def start_sniffing(event_queue):
     # Filters
-    filter_tcp_out = "tcp and not src net 10.42.0.0/24"
-    filter_no_gw = "not src 10.42.0.1"
+    filter_no_gw = "not src " + NETWORK_IP
 
     # Start sniffing packets on the 'wlp2s0' interface
-    sniff(filter=filter_no_gw, prn=packet_callback, store=False, iface='wlp2s0')
-
-    #for device in device_list:
-        #for query in device.dns_queries:
-            #print(f"Device {device.mac_address} ({device.ip_address}) DNS Query: {query}")
+    sniff(filter=filter_no_gw, prn=lambda pkt: packet_callback(pkt, event_queue), store=False, iface=INTERFACE)
 
     # nslookup 157.240.223.61 // Facebook Whatsapp IP
-    # Network IP: 10.42.0.0
