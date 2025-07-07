@@ -30,7 +30,11 @@ let currentDevicePage = -1;
 let totalPages = Math.ceil(jsonData.length / devicesPerPage);
 
 function updateDeviceTable() {
-  currentDevicePage = (currentDevicePage + 1) % totalPages;
+  if (totalPages === 0) {
+    currentDevicePage = 0;
+  } else {
+    currentDevicePage = (currentDevicePage + 1) % totalPages;
+  }
 
   const tbody = document.querySelector("#deviceTable tbody");
   tbody.innerHTML = "";
@@ -211,7 +215,7 @@ socket.addEventListener("message", (event) => {
   try {
     const device = JSON.parse(event.data);
 
-    if (device.mac_address && device.event_trigger) {
+    if (device.mac_address) {
       // Prüfe, ob das Gerät schon in der Liste ist
       const idx = jsonData.findIndex(d => d.mac_address === device.mac_address);
 

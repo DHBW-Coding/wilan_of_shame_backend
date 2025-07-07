@@ -69,8 +69,13 @@ class DeviceEvent:
         response = requests.get(url+formatted_mac)
         if response.status_code != 200:
             print("[!] Invalid MAC Address!")
-            if self.device_name.startswith("iPhone") or self.device_name.startswith("iPad"):
-                return "Apple, Inc." # Default to Apple Inc. for testing purposes
+            if self.device_name:
+                if self.device_name.startswith("iPhone") or self.device_name.startswith("iPad"):
+                    return "Apple, Inc." # Default to Apple Inc. for testing purposes
+            else:
+                self.device_name = "iPhone from ..." # Default to iPhone for testing purposes
+                return "Apple, Inc."
+            return "N/A"
         return response.content.decode()
     
     def add_event(self, event_type: Literal["NEW_DEVICE", "DNS_QUERY", "HTTP_REQUEST_UNSECURE"], details = None):
@@ -168,17 +173,20 @@ def packet_callback(packet: Packet, event_queue=None):
             print(f"New device detected: {mac} ({ip_src}) at {datetime.fromtimestamp(timestamp).isoformat()}")
             # Sent over WebSocket
             if event_queue:
+                print("New Device index: ", device_index, len(device_list))
                 event_json = json.dumps(device_list[-1].to_dict())
                 event_queue.put(event_json)
         else:
             device_list[device_index].timestamp = datetime.fromtimestamp(timestamp).isoformat()
-            if device_list[device_index].add_event("DNS_QUERY", packet[DNS].qd.qname.decode('utf-8')):
-                # TODO: Some packets do not have a qname chatch this
-                #print_device_events(device_list[device_index])
-                ## Sent over WebSocket
-                if event_queue:
-                    event_json = json.dumps(device_list[device_index].to_dict())
-                    event_queue.put(event_json)
+            if packet[DNS].qd.qname:
+                if device_list[device_index].add_event("DNS_QUERY", packet[DNS].qd.qname.decode('utf-8')):
+                    #print_device_events(device_list[device_index])
+                    print(device_index, len(device_list))
+                    ## Sent over WebSocket
+                    if event_queue:
+                        event_json = json.dumps(device_list[device_index].to_dict())
+                        event_queue.put(event_json)
+                        print("Event sent:", device_list[device_index].mac_address)
 
 def start_sniffing(event_queue):
     # Filters
