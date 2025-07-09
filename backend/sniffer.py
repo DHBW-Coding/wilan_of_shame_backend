@@ -56,7 +56,7 @@ class DeviceEvent:
             "device_name": self.device_name,
             "os_version": self.os_version,
             "event_trigger": self.event_trigger,
-            "dns_queries": self.dns_queries,
+            "dns_query": self.dns_queries[-1] if self.dns_queries else None,
             "http_request_details": vars(self.http_request_details) if self.http_request_details else None,
         }
 

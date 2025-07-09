@@ -296,29 +296,45 @@ h1 {
 
 .dns-line {
   display: flex;
+  align-items: center;
   font-size: 66px;
   margin-top: 48px;
   margin-bottom: 48px;
+  width: 100%;
+  gap: 16px;
 }
 
-.time {
-  font-size: 66px;
+.dns-line > .time {
   color: #5796C6;
-  width: 66px;
-  flex-shrink: 0;
-  margin-left: 240px;
-  margin-right: 120px;
+  width: 300px;         /* Fixed width for time */
+  min-width: 120px;
+  max-width: 350px;
+  text-align: left;
+  padding-left: 64px;   /* Larger gap to the left screen edge */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 0;       /* Prevent shrinking */
 }
 
-.url {
-  margin-left: 240px;
-  font-size: 66px;
+.dns-line > .url,
+.dns-line > .device {
+  flex: 1;
+  text-align: left;
+  padding-left: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dns-line > .url {
   color: white;
-  word-break: break-word;
+  width: 400px;         /* Fixed width for time */
+  min-width: 300px;
+  max-width: 550px;
 }
 
-.insecure {
-  font-size: 66px;
+.dns-line > .device {
   color: #F37AB3;
   font-weight: bold;
 }

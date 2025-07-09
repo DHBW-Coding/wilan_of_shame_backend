@@ -25,6 +25,11 @@ screens[current].classList.remove("hidden");
 
 let jsonData = [];
 
+let backendData = {
+  dns_queries: [
+  ],
+};
+
 const devicesPerPage = 12;
 let currentDevicePage = -1;
 let totalPages = Math.ceil(jsonData.length / devicesPerPage);
@@ -66,15 +71,6 @@ setInterval(() => {
   }
 }, 5000);
 
-const backendData = {
-  dns_queries: [
-    "https://www.dartconnect.com/",
-    "http://httpforever.com/",
-    "https://www.wetteronline.de/",
-    "https://github.com/langflow-ai",
-  ],
-};
-
 function renderDNSFeed(data) {
   const container = document.getElementById("dns-feed");
   container.innerHTML = "";
@@ -84,10 +80,16 @@ function renderDNSFeed(data) {
 
   const recentQueries = data.dns_queries.slice(-19);
 
-  recentQueries.forEach((url, index) => {
-    const timeStr = new Date(time.getTime() - index * 60000)
+  recentQueries.forEach((request, index) => {
+    let timeStr;
+
+    if (!request.time) {
+      timeStr = new Date(time.getTime() - index * 60000)
       .toTimeString()
-      .slice(0, 5);
+      .slice(0, 8); // HH:MM:SS
+    } else {
+      timeStr = new Date(request.time).toTimeString().slice(0, 8); // HH:MM:SS
+    }
 
     const line = document.createElement("div");
     line.className = "dns-line";
@@ -98,19 +100,81 @@ function renderDNSFeed(data) {
 
     const urlEl = document.createElement("div");
     urlEl.className = "url";
-    urlEl.textContent = url;
+    urlEl.textContent = request.url;
 
-    if (url.startsWith("http://")) {
-      urlEl.classList.add("insecure");
-    }
+    const deviceEl = document.createElement("div");
+    deviceEl.className = "device";
+    deviceEl.textContent = request.requester || "Unknown Device";
 
     line.appendChild(timeEl);
     line.appendChild(urlEl);
+    line.appendChild(deviceEl);
     container.appendChild(line);
   });
 }
 
-renderDNSFeed(backendData);
+function showRandomTip() {
+  const randomTip = tips[Math.floor(Math.random() * tips.length)];
+
+  const activeScreen = document.querySelector(".screen:not(.hidden)");
+
+  if (activeScreen) {
+    const tipEl = activeScreen.querySelector(".footer-headline");
+    const descEl = activeScreen.querySelector("footer p");
+
+    if (tipEl && descEl) {
+      tipEl.innerHTML = randomTip.headline;
+      descEl.textContent = randomTip.text;
+    }
+  }
+}
+
+function updateIndicators() {
+  const visibleScreen = document.querySelector(".screen:not(.hidden)");
+
+  const indicators = visibleScreen.querySelectorAll(
+    ".screen-indicators, .screen-indicators_qr"
+  );
+
+  indicators.forEach((group) => {
+    const dots = group.querySelectorAll(".dot");
+    dots.forEach((dot, index) => {
+      dot.classList.toggle("active", index === current);
+    });
+  });
+}
+
+socket.addEventListener("message", (event) => {
+  try {
+    const device = JSON.parse(event.data);
+
+    if (device.mac_address) {
+      // Prüfe, ob das Gerät schon in der Liste ist
+      const idx = jsonData.findIndex(d => d.mac_address === device.mac_address);
+
+        if (idx === -1) {
+          // Neues Gerät hinzufügen
+          jsonData.push(device);
+          console.log("New device added:", device.mac_address);
+        } else {
+          // Gerät ggf. updaten (optional)
+          jsonData[idx] = device;
+          backendData.dns_queries.push({
+            time:device.timestamp,
+            url: device.dns_query,
+            requester: device.device_name || device.mac_address,
+          });
+          console.log("Device updated:", device.mac_address);
+        }
+
+        renderDNSFeed(backendData);
+
+    }
+  } catch (e) {
+    console.error("Invalid JSON from backend:", event.data);
+  }
+});
+
 
 const tips = [
   {
@@ -179,58 +243,3 @@ const tips = [
     text: "They might be phishing attempts to steal your data.",
   },
 ];
-
-function showRandomTip() {
-  const randomTip = tips[Math.floor(Math.random() * tips.length)];
-
-  const activeScreen = document.querySelector(".screen:not(.hidden)");
-
-  if (activeScreen) {
-    const tipEl = activeScreen.querySelector(".footer-headline");
-    const descEl = activeScreen.querySelector("footer p");
-
-    if (tipEl && descEl) {
-      tipEl.innerHTML = randomTip.headline;
-      descEl.textContent = randomTip.text;
-    }
-  }
-}
-
-function updateIndicators() {
-  const visibleScreen = document.querySelector(".screen:not(.hidden)");
-
-  const indicators = visibleScreen.querySelectorAll(
-    ".screen-indicators, .screen-indicators_qr"
-  );
-
-  indicators.forEach((group) => {
-    const dots = group.querySelectorAll(".dot");
-    dots.forEach((dot, index) => {
-      dot.classList.toggle("active", index === current);
-    });
-  });
-}
-
-socket.addEventListener("message", (event) => {
-  try {
-    const device = JSON.parse(event.data);
-
-    if (device.mac_address) {
-      // Prüfe, ob das Gerät schon in der Liste ist
-      const idx = jsonData.findIndex(d => d.mac_address === device.mac_address);
-
-        if (idx === -1) {
-          // Neues Gerät hinzufügen
-          jsonData.push(device);
-          console.log("New device added:", device.mac_address);
-        } else {
-          // Gerät ggf. updaten (optional)
-          jsonData[idx] = device;
-          console.log("Device updated:", device.mac_address);
-        }
-
-    }
-  } catch (e) {
-    console.error("Invalid JSON from backend:", event.data);
-  }
-});
