@@ -6,23 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Welcome to WiLAN of Shame</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="stylesheet" href="/static/style.css" />
+    <link rel="stylesheet" href="style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
-    <!-- Screen 1: Captive Portal-->
-  <div id="screen-1" class="screen">
-    <div class="screen-content">
-      <img src="/static/assets/WiLAN_Logo1.png" alt="WiLAN of Shame Logo" class="logo" />
-      <div class="instruction">
-        <h1>Welcome to WiLAN of Shame.</h1>
-        <p>By accessing this WiFi hotspot, you agree to our <a href="terms-of-service.html">Terms of Service</a> and <a href="privacy-policy.html">Privacy Policy</a>.</p> 
-      </div>
-      <div class="captive-form">
-        <form action="/login" method="post">
-            <input type="submit" value="Accept and Continue">
-        </form>
-      </div>
+  <!-- Screen 1: Captive Portal -->
+<div id="screen-1" class="screen">
+  <div class="screen-content captive">
+    <img src="assets/WiLAN_Logo1.png" alt="WiLAN of Shame Logo" class="logo" />
+    
+    <div class="instruction_captive">
+      <h1>Welcome to<br> <span class="highlight">WiLAN of Shame</span></h1>
+      <br><br><br><br>
+      <p>
+        By accessing this WiFi hotspot, you agree to our
+        <a href="terms-of-service.html">Terms of Service</a> and
+        <a href="privacy-policy.html">Privacy Policy</a>.
+      </p>
+    </div>
+
+    <div class="captive-form">
+      <form action="/login" method="post">
+        <input type="submit" value="Accept and Continue" class="accept-btn" />
+      </form>
     </div>
   </div>
+</div>
