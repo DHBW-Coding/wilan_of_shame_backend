@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WLAN of Shame</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <!-- Screen 1: WiFi Connect -->
+  <div id="screen-1" class="screen">
+    <div class="screen-content">
+      <img src="/static/assets/WiLAN_Logo1.png" alt="WiLAN of Shame Logo" class="logo" />
+      <div class="instruction">Connect to free Wi-Fi – scan me!</div>
+      <img src="https://api.qrserver.com/v1/create-qr-code/?data=WIFI:T:nopass;S:PublicWifi;;&size=1200x1200"
+        alt="QR Code" class="qr-image" />
+      <div class="ssid-info">
+        <span class="ssid-label">SSID:</span><span class="ssid-space"> </span><span class="ssid-value">PublicWiFi</span>
+      </div>
+      <div class="screen-indicators_qr">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Screen 2: Connected Devices -->
+  <div id="screen-2" class="screen hidden">
+    <div class="container">
+      <img src="/static/assets/WiLAN_Logo1.png" alt="WiLAN of Shame Logo" class="logo" />
+      <div class="qr-container">
+        <img class="qr-code"
+          src="https://api.qrserver.com/v1/create-qr-code/?data=WIFI:T:nopass;S:PublicWifi;;&size=200x200"
+          alt="Wi-Fi QR Code" />
+        <div class="qr-label">Free Wi-Fi – just scan!</div>
+      </div>
+
+      <div class="content-card">
+        <table class="device-table" id="deviceTable">
+          <thead>
+            <tr>
+              <th>MAC</th>
+              <th>MANUFACTURER</th>
+              <th>DEVICE</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Filled by JS -->
+          </tbody>
+        </table>
+        <div class="device-count" id="deviceCount">0 CONNECTED DEVICES</div>
+      </div>
+
+      <footer class="wilan-footer">
+        <div id="footer-tip-2" class="footer-headline">💡 <strong>Sipping coffee? Use a VPN before surfing
+            freely!</strong></div>
+        <p id="footer-description-2">A VPN encrypts your connection and keeps snoopers away.</p>
+        <div class="screen-indicators">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      </footer>
+    </div>
+  </div>
+  </div>
+
+  <!-- Screen 3: Live DNS Feed -->
+  <div id="screen-3" class="screen hidden">
+    <div class="container">
+      <img src="/static/assets/WiLAN_Logo1.png" alt="WiLAN of Shame Logo" class="logo" />
+      <div class="qr-container">
+        <img class="qr-code"
+          src="https://api.qrserver.com/v1/create-qr-code/?data=WIFI:T:nopass;S:PublicWifi;;&size=200x200"
+          alt="Wi-Fi QR Code" />
+        <div class="qr-label">Free Wi-Fi - just scan!</div>
+      </div>
+    </div>
+    <div class="wilan-queries">
+      <div id="dns-feed"></div>
+    </div>
+
+    <footer class="wilan-footer">
+      <div id="footer-tip-3" class="footer-headline">💡 <strong>No padlock, no login!</strong></div>
+      <p id="footer-description-3">Only enter personal info on websites that show “https://” and a lock icon.</p>
+      <div class="screen-indicators">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Screen 4: Leaderboard
+  <div id="screen-4" class="screen hidden">
+    <div class="container">
+      <img src="assets/WiLAN_Logo1.png" alt="WiLAN of Shame Logo" class="logo" />
+      <div class="qr-container">
+        <img class="qr-code"
+          src="https://api.qrserver.com/v1/create-qr-code/?data=WIFI:T:nopass;S:Free%20WiFi;;&size=200x200"
+          alt="Wi-Fi QR Code" />
+        <div class="qr-label">Connect to free<br>Wi-Fi – scan me!</div>
+      </div>
+    </div>
+    <div class="placeholder">Screen 4 – Leaderboard</div>
+  </div> -->
+
+  <script src="/static/script.js"></script>
+</body>
+
+</html>
