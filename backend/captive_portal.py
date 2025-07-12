@@ -9,30 +9,31 @@ from pathlib import Path
 app = FastAPI()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+CAPTIVE_DIR = BASE_DIR / "captive-p"
 
-app.mount("/static", StaticFiles(directory=BASE_DIR / "frontend"), name="static")
+app.mount("/cpstatic", StaticFiles(directory=CAPTIVE_DIR / "static"), name="cpstatic")
 
 @app.get("/", response_class=HTMLResponse)
 def read_root():
-    html_path = Path(BASE_DIR / "captive-p/index.html")
+    html_path = Path(CAPTIVE_DIR / "index.html")
     html_content = html_path.read_text(encoding="utf-8")
     return HTMLResponse(content=html_content)
 
 @app.get("/privacy-policy.html", response_class=HTMLResponse)
 def read_root():
-    html_path = Path(BASE_DIR / "captive-p/privacy-policy.html")
+    html_path = Path(CAPTIVE_DIR / "privacy-policy.html")
     html_content = html_path.read_text(encoding="utf-8")
     return HTMLResponse(content=html_content)
 
 @app.get("/terms-of-service.html", response_class=HTMLResponse)
 def read_root():
-    html_path = Path(BASE_DIR / "captive-p/terms-of-service.html")
+    html_path = Path(CAPTIVE_DIR / "terms-of-service.html")
     html_content = html_path.read_text(encoding="utf-8")
     return HTMLResponse(content=html_content)
 
 @app.get("/favicon.ico", include_in_schema=False)
 def favicon():
-    return FileResponse(BASE_DIR / "frontend" / "assets" / "favicon.ico")
+    return FileResponse(CAPTIVE_DIR / "static" / "cp-assets" / "favicon.ico")
 
 '''
 1. Abfage welches gerät (z.B. Apple, etc.) sich verbinden will (über Macadresse in Verbindung mit dem Captive Portal Call siehe unten)
