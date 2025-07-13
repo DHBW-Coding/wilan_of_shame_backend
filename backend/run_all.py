@@ -9,11 +9,11 @@ def run_main_webserver(event_queue):
     from main_webserver import app
 
     app.state.event_queue = event_queue
-    uvicorn.run(app, host="192.168.4.1", port=8083)
+    uvicorn.run(app, host="127.0.0.1", port=8083)
 
 def run_captive_portal():
     from captive_portal import app
-    uvicorn.run(app, host="192.168.4.1", port=8080)
+    uvicorn.run(app, host="127.0.0.1", port=8080)
 
 def run_sniffer(event_queue):
     sniffer.start_sniffing(event_queue)

@@ -1,4 +1,5 @@
 import asyncio
+import string
 from time import sleep
 from scapy.all import sniff, DNS, TCP, IP, Ether, Packet
 import bisect
@@ -10,12 +11,12 @@ import requests
 from websocket_manager import ws_manager
 import json
 
-LEASE_FILE = '/var/lib/misc/dnsmasq.leases'                # For Raspberry Pi
-INTERFACE = 'wlan0'
-NETWORK_IP = '192.168.4.1'
-# LEASE_FILE = '/var/lib/NetworkManager/dnsmasq-wlp2s0.leases'
-# INTERFACE = 'wlp2s0'
-# NETWORK_IP = '10.42.0.1'
+#LEASE_FILE = '/var/lib/misc/dnsmasq.leases'                # For Raspberry Pi
+#INTERFACE = 'wlan0'
+#NETWORK_IP = '192.168.4.1'
+LEASE_FILE = '/var/lib/NetworkManager/dnsmasq-wlp2s0.leases'
+INTERFACE = 'wlp2s0'
+NETWORK_IP = '10.42.0.1'
 
 @dataclass
 class HTTPRequestDetails:
@@ -103,6 +104,23 @@ class DeviceEvent:
                 parts = q.strip('.').split('.')
                 return '.'.join(parts[-2:]) if len(parts) >= 2 else q
             return get_domain(q1) == get_domain(q2)
+        
+        def sanitize_query(q):
+            parts = q.strip('.').split('.')
+            if q.startswith('www'):
+                return q
+            elif parts.length > 3:
+                return '.'.join(parts[-3:])
+            return q
+        
+        def lookup_interesting_domains(q):
+            
+            readable_name = interesting_domains.get(q)
+            if readable_name == "Not relevant":
+                return None
+            elif readable_name:
+                return readable_name
+            return q
 
         last_queries = self.dns_queries[-5:] if len(self.dns_queries) >= 5 else self.dns_queries
         if details not in last_queries and not any(is_similar(details, q) for q in last_queries):
@@ -127,6 +145,7 @@ class DeviceEvent:
 
 #Create a class dont declare global variables    
 device_list = []
+interesting_domains = None
 
 def device_exist(mac_src=None):
         ''' Check if and where the device is in the list '''
@@ -190,6 +209,13 @@ def packet_callback(packet: Packet, event_queue=None):
                         print("Event sent:", device_list[device_index].mac_address)
 
 def start_sniffing(event_queue):
+    # Load interesting domains
+    try:
+        with open("interesting_domains.json", "r") as f:
+            interesting_domains = json.load(f)
+    except Exception as e:
+        print(f"Error loading interesting_domains.json: {e}")
+
     # Filters
     filter_no_gw = "not src " + NETWORK_IP
 
