@@ -80,7 +80,7 @@ function renderDNSFeed(data) {
   const now = new Date();
   let time = now;
 
-  const recentQueries = data.dns_queries.slice(-17);
+  const recentQueries = data.dns_queries.slice(-19);
 
   recentQueries.forEach((request, index) => {
     let timeStr;
