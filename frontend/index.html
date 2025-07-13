@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WLAN of Shame</title>
-  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="stylesheet" href="/frontend/style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
@@ -13,7 +13,7 @@
   <!-- Screen 1: WiFi Connect -->
   <div id="screen-1" class="screen">
     <div class="screen-content">
-      <img src="/static/assets/WiLAN_Logo1.png" alt="WiLAN of Shame Logo" class="logo" />
+      <img src="/frontend/assets/WiLAN_Logo1.png" alt="WiLAN of Shame Logo" class="logo" />
       <div class="instruction">Connect to free Wi-Fi – scan me!</div>
       <img src="https://api.qrserver.com/v1/create-qr-code/?data=WIFI:T:nopass;S:PublicWifi;;&size=1200x1200"
         alt="QR Code" class="qr-image" />
@@ -32,13 +32,15 @@
   <!-- Screen 2: Connected Devices -->
   <div id="screen-2" class="screen hidden">
     <div class="container">
-      <img src="/static/assets/WiLAN_Logo1.png" alt="WiLAN of Shame Logo" class="logo" />
+      <img src="/frontend/assets/WiLAN_Logo1.png" alt="WiLAN of Shame Logo" class="logo" />
       <div class="qr-container">
         <img class="qr-code"
           src="https://api.qrserver.com/v1/create-qr-code/?data=WIFI:T:nopass;S:PublicWifi;;&size=200x200"
           alt="Wi-Fi QR Code" />
         <div class="qr-label">Free Wi-Fi – just scan!</div>
       </div>
+
+       <h2 style="margin-top: 200px;" class="section-heading">Who’s currently connected to the network?</h2>
 
       <div class="content-card">
         <table class="device-table" id="deviceTable">
@@ -73,7 +75,7 @@
   <!-- Screen 3: Live DNS Feed -->
   <div id="screen-3" class="screen hidden">
     <div class="container">
-      <img src="/static/assets/WiLAN_Logo1.png" alt="WiLAN of Shame Logo" class="logo" />
+      <img src="/frontend/assets/WiLAN_Logo1.png" alt="WiLAN of Shame Logo" class="logo" />
       <div class="qr-container">
         <img class="qr-code"
           src="https://api.qrserver.com/v1/create-qr-code/?data=WIFI:T:nopass;S:PublicWifi;;&size=200x200"
@@ -81,6 +83,7 @@
         <div class="qr-label">Free Wi-Fi - just scan!</div>
       </div>
     </div>
+     <h2 style="margin-top: 200px;" class="section-heading">Which websites are being requested in real-time?</h2>
     <div class="wilan-queries">
       <div id="dns-feed"></div>
     </div>
@@ -110,7 +113,7 @@
     <div class="placeholder">Screen 4 – Leaderboard</div>
   </div> -->
 
-  <script src="/static/script.js"></script>
+  <script src="/frontend/script.js"></script>
 </body>
 
 </html>

@@ -48,7 +48,7 @@ body {
   background-color: #13253D;
   border-radius: 80px;
   padding: 80px;
-  margin-top: 400px;
+  margin-top: 200px;
   margin-left: 80px;
   margin-right: 80px;
 }
@@ -298,7 +298,7 @@ h1 {
   border-top: 4px solid #2D4257;
   border-bottom: 4px solid #2D4257;
   padding: 4rem 0;
-  margin-top: 360px;
+  margin-top: 160px;
 }
 
 .dns-line {
@@ -405,4 +405,12 @@ h1 {
 .dot.active {
   transform: scale(1.4);
   background-color: #F37AB3;
+}
+
+.section-heading {
+  font-size: 4rem;
+  font-weight: bold;
+  margin: 1.5rem 0 1rem;
+  text-align: center;
+  color: lightgray;
 }

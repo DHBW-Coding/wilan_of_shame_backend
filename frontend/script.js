@@ -1,6 +1,7 @@
 const socket = new WebSocket("ws://192.168.4.1:8083/ws");
 
 const screens = document.querySelectorAll(".screen");
+const screenDurations = [10000, 20000, 30000];
 let current = 0;
 updateIndicators();
 
@@ -15,10 +16,11 @@ function showNextScreen() {
     currentDevicePage = 0;
     updateDeviceTable();
   }
+  
+  setTimeout(showNextScreen, screenDurations[current]);
 }
 
-// Alle 10 Sekunden zum nächsten Screen wechseln
-setInterval(showNextScreen, 20000);
+setTimeout(showNextScreen, screenDurations[current]);
 
 // Initial: ersten Screen anzeigen
 screens[current].classList.remove("hidden");
@@ -30,7 +32,7 @@ let backendData = {
   ],
 };
 
-const devicesPerPage = 12;
+const devicesPerPage = 11;
 let currentDevicePage = -1;
 let totalPages = Math.ceil(jsonData.length / devicesPerPage);
 
@@ -78,7 +80,7 @@ function renderDNSFeed(data) {
   const now = new Date();
   let time = now;
 
-  const recentQueries = data.dns_queries.slice(-19);
+  const recentQueries = data.dns_queries.slice(-17);
 
   recentQueries.forEach((request, index) => {
     let timeStr;
