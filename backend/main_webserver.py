@@ -25,13 +25,13 @@ async def startup_event():
             data = await loop.run_in_executor(None, event_queue.get)
             await ws_manager.send_to_queue(data)
 
-    # Task 1: Von event_queue in ws_manager-Queue
+    # event_queue to ws_manager-Queue
     asyncio.create_task(forward_events_from_queue())
-    # Task 2: Von ws_manager-Queue an alle WebSocket-Clients
+    # ws_manager-Queue to all WebSocket-Clients
     asyncio.create_task(ws_manager.broadcast_from_queue())
 
 
-# Optional: serve index.html at root explicitly
+# serve index.html at root explicitly
 @app.get("/")
 async def serve_index():
     return FileResponse(os.path.join(frontend_path, "index.html"))

@@ -1,0 +1,29 @@
+import json
+
+def get_readable_name(q, readable_name):
+    interesting_domains = {}
+
+    try:
+        with open("backend/interesting_domains.json", "r") as f:
+            interesting_domains = json.load(f)
+    except Exception as e:
+        print(f"Error loading interesting_domains.json: {e}")
+        interesting_domains = {}
+
+    readable_name = interesting_domains.get(q)
+    if not readable_name:
+        # Check if the domain matches any pattern in interesting_domains
+        for pattern, name in interesting_domains.items():
+            if '*' in pattern:
+                if pattern.replace('*', '').strip() in q:
+                    readable_name = name
+                    break
+    return readable_name
+
+
+if __name__ == "__main__":
+    # Example usage
+    q = ".googlesyndication.com"
+    readable_name = ""
+    result = get_readable_name(q, readable_name)
+    print(f"Readable name for '{q}': {result}")

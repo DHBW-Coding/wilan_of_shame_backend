@@ -75,7 +75,7 @@ class DeviceEvent:
             if self.device_name:
                 if self.device_name.startswith("iPhone") or self.device_name.startswith("iPad"):
                     return "Apple, Inc." # Default to Apple Inc. for testing purposes
-                if self.device_name.startswith("S"):
+                if self.device_name.startswith("S") or self.device_name.startswith("A"):
                     return "Samsung Electronics Co.,Ltd"
             return "N/A"
         return response.content.decode()
@@ -86,7 +86,7 @@ class DeviceEvent:
         if event_type == "DNS_QUERY" and details:
             details = self.filter_relevant_dns_queries(details)
             if details:
-                self.dns_queries.append(details)
+                self.dns_queries.append(details.strip('.'))
                 return True
         elif event_type == "HTTP_REQUEST_UNSECURE" and details:
             self.http_request_details = HTTPRequestDetails(
@@ -102,29 +102,46 @@ class DeviceEvent:
         def is_similar(q1, q2):
             def get_domain(q):
                 parts = q.strip('.').split('.')
-                return '.'.join(parts[-2:]) if len(parts) >= 2 else q
+                return '.'.join(parts[-3:]) if len(parts) >= 3 else q
             return get_domain(q1) == get_domain(q2)
         
         def sanitize_query(q):
             parts = q.strip('.').split('.')
             if q.startswith('www'):
                 return q
-            elif parts.length > 3:
+            elif len(parts) > 3:
                 return '.'.join(parts[-3:])
             return q
         
         def lookup_interesting_domains(q):
             
-            readable_name = interesting_domains.get(q)
+            readable_name = interesting_domains.get(q.strip('.'))
+            if not readable_name:
+                # Check if the domain matches any pattern in interesting_domains
+                for pattern, name in interesting_domains.items():
+                    if '*' in pattern:
+                        if pattern.replace('*', '').strip() in q:
+                            readable_name = name
+                            break
+
             if readable_name == "Not relevant":
+                #print(f"Skipping non-relevant domain")
                 return None
             elif readable_name:
                 return readable_name
-            return q
+            else:
+                last_queries = self.dns_queries[-5:] if len(self.dns_queries) >= 7 else self.dns_queries
+                if any(is_similar(q, last_q) for last_q in last_queries):
+                    #print("Skipping similar domain")
+                    return None
+                return sanitize_query(q)
+
+        details = lookup_interesting_domains(details.strip('.'))
+        if not details: return None
 
         last_queries = self.dns_queries[-5:] if len(self.dns_queries) >= 5 else self.dns_queries
-        if details not in last_queries and not any(is_similar(details, q) for q in last_queries):
-            return details
+        if details not in last_queries:
+            return details.strip('.')
         else:
             return None
 
@@ -143,9 +160,8 @@ class DeviceEvent:
             print(f"Error: {e}")
         return None
 
-#Create a class dont declare global variables    
+# Create a class dont declare global variables    
 device_list = []
-interesting_domains = None
 
 def device_exist(mac_src=None):
         ''' Check if and where the device is in the list '''
@@ -158,7 +174,6 @@ def device_exist(mac_src=None):
             
         return -1
         
-
 def add_device(ip_src, mac_src, timestamp=None):
     ''' Add a new device to the list '''
     device_event = DeviceEvent(ip_address=ip_src, mac_address=mac_src, timestamp=timestamp)
@@ -193,28 +208,29 @@ def packet_callback(packet: Packet, event_queue=None):
             print(f"New device detected: {mac} ({ip_src}) at {datetime.fromtimestamp(timestamp).isoformat()}")
             # Sent over WebSocket
             if event_queue:
-                print("New Device index: ", device_index, len(device_list))
                 event_json = json.dumps(device_list[-1].to_dict())
                 event_queue.put(event_json)
         else:
             device_list[device_index].timestamp = datetime.fromtimestamp(timestamp).isoformat()
             if packet[DNS].qd:
                 if device_list[device_index].add_event("DNS_QUERY", packet[DNS].qd.qname.decode('utf-8')):
-                    #print_device_events(device_list[device_index])
-                    print(device_index, len(device_list))
                     ## Sent over WebSocket
                     if event_queue:
                         event_json = json.dumps(device_list[device_index].to_dict())
                         event_queue.put(event_json)
-                        print("Event sent:", device_list[device_index].mac_address)
+                        print("Event sent:", device_list[device_index].dns_queries[-1])
 
 def start_sniffing(event_queue):
+
+    global interesting_domains
+
     # Load interesting domains
     try:
         with open("interesting_domains.json", "r") as f:
             interesting_domains = json.load(f)
     except Exception as e:
         print(f"Error loading interesting_domains.json: {e}")
+        return -1
 
     # Filters
     filter_no_gw = "not src " + NETWORK_IP
