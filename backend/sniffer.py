@@ -11,12 +11,12 @@ import requests
 from websocket_manager import ws_manager
 import json
 
-#LEASE_FILE = '/var/lib/misc/dnsmasq.leases'                # For Raspberry Pi
-#INTERFACE = 'wlan0'
-#NETWORK_IP = '192.168.4.1'
-LEASE_FILE = '/var/lib/NetworkManager/dnsmasq-wlp2s0.leases'
-INTERFACE = 'wlp2s0'
-NETWORK_IP = '10.42.0.1'
+LEASE_FILE = '/var/lib/misc/dnsmasq.leases'                # For Raspberry Pi
+INTERFACE = 'wlan0'
+NETWORK_IP = '192.168.4.1'
+#LEASE_FILE = '/var/lib/NetworkManager/dnsmasq-wlp2s0.leases'
+#INTERFACE = 'wlp2s0'
+#NETWORK_IP = '10.42.0.1'
 
 @dataclass
 class HTTPRequestDetails:

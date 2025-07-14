@@ -1,4 +1,5 @@
 const socket = new WebSocket("ws://192.168.4.1:8083/ws");
+//const socket = new WebSocket("ws://127.0.0.1:8083/ws");
 
 const screens = document.querySelectorAll(".screen");
 const screenDurations = [10000, 20000, 30000];
